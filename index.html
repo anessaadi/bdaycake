@@ -1,0 +1,318 @@
+<!-- Ideaaas
+----===------ fel bedya dir fatra te3 analyse.. analysi sound li kayen felmakan w 3la assasah 7aded hadik 30 wel 45
+----===------ blk nrdha 3la 7seb toul blowing.. ymchi lvideo ymchi hetta y7bs blowing y3awed yet inverta w tzeli
+chem3a nrml sinon la tawlet lmouda ytfa
+----===------ ida n9dr te3 allow the mic popup tweli fiha jomla cute
+-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{
+      background-color: black;
+      /* height: 100vh;
+      width: 100vw; */
+      overflow: hidden;
+    }
+    .middle{
+      width: 100%;
+      height: 100vh;
+      /* background-color: pink; */
+      /* justify-content: center;
+      justify-items: center;
+      align-items: center;
+      align-content: center; */
+      overflow: hidden;
+
+    }
+    .empty{
+
+      background-color: aqua;
+      margin-left: 33%;
+
+
+      
+      
+      
+    }
+    .hb {
+      color: white;
+      display: block;
+      text-align: center;
+
+      font-size:1em;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+      top: 100px;
+      z-index: 4;
+      line-height: 150%;
+      font-family: "Lucida Console", "Courier New", monospace;
+    }
+    .flame-video{
+      display: none;
+    }
+    .imgempty {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 400px;
+  position: relative;
+  top: 200px;
+  z-index: 4;
+  }
+  .header{
+    position: fixed;
+    width: 102%;
+    height: 60px;
+    background-color: rgb(18, 18, 18);
+    direction: rtl;
+    top: -10px;
+    left: -10px;
+  }
+  .gifticon{
+    display: inline-block;
+    filter: brightness(0) invert(1);
+    margin-right: 10px;
+    margin-top: 14px;
+    height: 37px;
+    z-index: 7;
+
+
+  }
+  .menuicon{
+    filter: brightness(0) invert(1);
+    
+    margin-right: 30px;
+    height: 37px;
+    z-index: 6;
+    
+    
+
+
+
+
+  }
+  .logo{
+    width: 120px;
+    position: fixed;
+    top: -17px;
+    left: -30px;
+  }
+  @keyframes slideInRight {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+  .getgift{
+    color: white;
+    top: 33px;
+    right: 125px;
+    position: absolute;
+    font-family: "Lucida Handwriting", cursive;
+    font-size:x-small;
+
+
+    line-height: 20%;
+    animation: slideInRight 6s infinite, slideOutRight 6s infinite; /* Adjust the duration as needed */
+    animation-delay: 3s; /* Delay for the second animation */
+  }
+  .flame-video {
+      position:relative;
+      /* bottom: 49.2%;
+      left: 46%;
+      
+      width: 200px; Adjust as needed */
+      height: 200px;
+      /* transform: translateX(-50%);
+      display: none; */
+      /* z-index: 2; */
+      /* margin-bottom: 0cm; */
+      bottom: 324px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 9px;
+      z-index: 2;
+      display: none;
+    }
+    @media only screen and (max-width: 768px) {
+      /* .empty{
+        margin-left: 15%;
+        
+      }
+      .imgempty{
+        width: 85%;
+      } */
+
+    }
+    .hidesquare{
+      position: absolute;
+      height: 50px;
+      width: 110px;
+      background-color: rgb(18, 18, 18);
+      top: 0;
+      right: 0;
+      z-index: 0;
+      
+    }
+
+    
+  </style>
+</head>
+<body>
+  <div class="all">
+  
+    
+    <div class="header">
+      <span class="getgift">!Get yourself a gift</span>
+      <div class="hidesquare"></div>
+      <img class="logo" src="logo.png"/>
+      
+      <img class="menuicon" src="bx-menu.svg"/>
+      <img class="gifticon" src="bx-gift.svg"/>
+      
+      
+
+      
+    </div>
+    
+    
+    <div class="middle">
+      <span class="hb">Happy 23rd Birthday Anes! <br>Wish for something and blow out the candle!</span>
+      <img class="imgempty" src="./empty001.png"/>
+      
+        
+         
+          <video id="initial-flame" class="flame-video" autoplay loop muted>
+            <!-- <source src="initial_flame.mp4" type="video/mp4"> -->
+            <source src="3011.mp4" type="video/mp4">
+          </video>
+          <video id="medium-flame" class="flame-video" autoplay loop muted>
+            <!-- <source src="medium_flame.mp4" type="video/mp4"> -->
+            <source src="3022.mp4" type="video/mp4">
+          </video>
+          <video id="blown-out-flame" class="flame-video" autoplay loop muted>
+            <!-- <source src="blown_out_flame.mp4" type="video/mp4"> -->
+            <source src="3033.mp4" type="video/mp4">
+          </video>
+          <video id="next-flame" class="flame-video" loop muted style="display: none;">
+            <source src="3044.mp4" type="video/mp4">
+          </video>
+        
+        <!-- <button id="reset-button">Reset</button> -->
+      </div>  
+      
+   
+    <div class="right"></div>
+  </div>
+ 
+  
+
+  
+
+  <script>
+    // Your JavaScript code here
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let mic;
+
+    // Variables to track the state
+    let isBlownOutShown = false;
+
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then((stream) => {
+        mic = audioContext.createMediaStreamSource(stream);
+        const analyser = audioContext.createAnalyser();
+        mic.connect(analyser);
+
+        analyser.fftSize = 2048;
+        const bufferLength = analyser.frequencyBinCount;
+
+        const dataArray = new Uint8Array(bufferLength);
+
+        function analyzeVolume() {
+          analyser.getByteFrequencyData(dataArray);
+          console.log('Amplitude Data:', dataArray);
+
+          // Calculate averageVolume from frequency data
+          const averageVolume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
+
+          const initialFlameVideo = document.getElementById('initial-flame');
+          const mediumFlameVideo = document.getElementById('medium-flame');
+          const blownOutFlameVideo = document.getElementById('blown-out-flame');
+          const nextFlameVideo = document.getElementById('next-flame');
+
+          // Check if the blown-out flame is already shown
+          if (!isBlownOutShown) {
+            // Adjust the threshold values as needed
+            if (averageVolume < 30) {
+              // Low volume, show initial flame video
+              initialFlameVideo.style.display = 'block';
+              mediumFlameVideo.style.display = 'none';
+              blownOutFlameVideo.style.display = 'none';
+            } else if (averageVolume >= 30 && averageVolume < 40) {
+              // Medium volume, show medium flame video
+              initialFlameVideo.style.display = 'none';
+              mediumFlameVideo.style.display = 'block';
+              blownOutFlameVideo.style.display = 'none';
+            } else {
+              blownOutFlameVideo.currentTime = 0;
+              // High volume, show blown-out flame video
+              initialFlameVideo.style.display = 'none';
+              mediumFlameVideo.style.display = 'none';
+              blownOutFlameVideo.style.display = 'block';
+
+              // Set the flag to true, indicating the blown-out flame is shown
+              isBlownOutShown = true;
+
+              // Set up the timer to switch videos after 25 seconds
+              setTimeout(() => {
+                isOut = true;
+                blownOutFlameVideo.style.display = 'none';
+                nextFlameVideo.style.display = 'block';
+                nextFlameVideo.play(); // Start playing "3044.mp4"
+                blownOutFlameVideo.style.display = 'none';
+              }, 21000); // Delay for 25 seconds
+            }
+          } else if (isOut) {
+            // Handle logic for when '3044.mp4' is playing
+          }
+
+          // Log averageVolume to console
+          console.log('Average Volume:', averageVolume);
+        }
+
+        setInterval(analyzeVolume, 100); // Log every 0.1 seconds
+
+        // Reset button click event
+        const resetButton = document.getElementById('reset-button');
+        resetButton.addEventListener('click', () => {
+          // Reset the state
+          isBlownOutShown = false;
+
+          // Hide all videos
+          document.getElementById('initial-flame').style.display = 'none';
+          document.getElementById('medium-flame').style.display = 'none';
+          document.getElementById('blown-out-flame').style.display = 'none';
+          document.getElementById('next-flame').style.display = 'none';
+          isBlownOutShown = false;
+        });
+        
+      })
+      .catch((error) => {
+        console.error('Error accessing microphone:', error);
+      });
+  </script>
+</body>
+</html>
