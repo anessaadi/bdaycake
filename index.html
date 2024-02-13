@@ -235,7 +235,7 @@ chem3a nrml sinon la tawlet lmouda ytfa
   if (startButton) {
     startButton.addEventListener('click', () => {
       // Trigger microphone access after button click
-      
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } })
         .then((stream) => {
            console.log('Microphone access granted');
