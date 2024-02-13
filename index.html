@@ -42,7 +42,7 @@
       margin-left: auto;
       margin-right: auto;
       position: relative;
-      top: 100px;
+      top: 150px;
       z-index: 4;
       line-height: 150%;
       font-family: "Lucida Console", "Courier New", monospace;
@@ -56,7 +56,8 @@
   margin-right: auto;
   width: 400px;
   position: relative;
-  top: 200px;
+  top: 290px;
+ 
   z-index: 4;
   }
   .header{
@@ -132,14 +133,14 @@
       display: none; */
       /* z-index: 2; */
       /* margin-bottom: 0cm; */
-      bottom: 324px;
+      bottom: 234px;
       margin-left: auto;
       margin-right: auto;
       padding-left: 9px;
       z-index: 2;
       display: none;
     }
-    @media only screen and (max-width: 768px) {
+    @media only screen and (max-width: 416px) {
       /* .empty{
         margin-left: 15%;
         
@@ -147,6 +148,9 @@
       .imgempty{
         width: 85%;
       } */
+      .flame-video{
+        margin-left: 96px;
+      }
 
     }
     .hidesquare{
@@ -214,99 +218,146 @@
 
   
 
-  <script>
-    // Your JavaScript code here
-    // const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    let mic;
+  <!-- Add this script at the end of your HTML body -->
+<!-- Add this script at the end of your HTML body -->
+<script>
+  // Function to get URL parameter value by name
+  function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+    const results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  }
 
-    // Variables to track the state
-    let isBlownOutShown = false;
+  // Function to determine the suffix for the age
+  function getAgeSuffix(age) {
+    const lastDigit = age % 10;
+    const lastTwoDigits = age % 100;
 
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 13) {
+      return 'th';
+    } else if (lastDigit === 1) {
+      return 'st';
+    } else if (lastDigit === 2) {
+      return 'nd';
+    } else if (lastDigit === 3) {
+      return 'rd';
+    } else {
+      return 'th';
+    }
+  }
 
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then((stream) => {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        mic = audioContext.createMediaStreamSource(stream);
-        const analyser = audioContext.createAnalyser();
-        mic.connect(analyser);
+  // Get values from URL parameters
+  const nameParam = getParameterByName('name');
+  const ageParam = getParameterByName('age');
 
-        analyser.fftSize = 2048;
-        const bufferLength = analyser.frequencyBinCount;
+  // Update HTML content with variable values or placeholders
+  const nameElement = document.querySelector('.hb');
 
-        const dataArray = new Uint8Array(bufferLength);
+  if (nameParam && ageParam) {
+    const ageSuffix = getAgeSuffix(parseInt(ageParam));
+    const ageText = ageParam ? `${ageParam}${ageSuffix}` : '...';
+    nameElement.innerHTML = `Happy ${ageText} Birthday ${nameParam}! <br>Wish for something and blow out the candle!`;
+  } else {
+    nameElement.innerHTML = 'Happy Birthday ...! <br>Wish for something and blow out the candle!';
+  }
 
-        function analyzeVolume() {
-          analyser.getByteFrequencyData(dataArray);
-          console.log('Amplitude Data:', dataArray);
+  // Your JavaScript code here
+  // const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  let mic;
 
-          // Calculate averageVolume from frequency data
-          const averageVolume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
+  // Variables to track the state
+  let isBlownOutShown = false;
 
-          const initialFlameVideo = document.getElementById('initial-flame');
-          const mediumFlameVideo = document.getElementById('medium-flame');
-          const blownOutFlameVideo = document.getElementById('blown-out-flame');
-          const nextFlameVideo = document.getElementById('next-flame');
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then((stream) => {
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      mic = audioContext.createMediaStreamSource(stream);
+      const analyser = audioContext.createAnalyser();
+      mic.connect(analyser);
 
-          // Check if the blown-out flame is already shown
-          if (!isBlownOutShown) {
-            // Adjust the threshold values as needed
-            if (averageVolume < 30) {
-              // Low volume, show initial flame video
-              initialFlameVideo.style.display = 'block';
-              mediumFlameVideo.style.display = 'none';
+      analyser.fftSize = 2048;
+      const bufferLength = analyser.frequencyBinCount;
+
+      const dataArray = new Uint8Array(bufferLength);
+
+      function analyzeVolume() {
+        analyser.getByteFrequencyData(dataArray);
+        console.log('Amplitude Data:', dataArray);
+
+        // Calculate averageVolume from frequency data
+        const averageVolume = dataArray.reduce((sum, value) => sum + value, 0) / bufferLength;
+
+        const initialFlameVideo = document.getElementById('initial-flame');
+        const mediumFlameVideo = document.getElementById('medium-flame');
+        const blownOutFlameVideo = document.getElementById('blown-out-flame');
+        const nextFlameVideo = document.getElementById('next-flame');
+
+        // Check if the blown-out flame is already shown
+        if (!isBlownOutShown) {
+          // Adjust the threshold values as needed
+          if (averageVolume < 30) {
+            // Low volume, show initial flame video
+            initialFlameVideo.style.display = 'block';
+            mediumFlameVideo.style.display = 'none';
+            blownOutFlameVideo.style.display = 'none';
+          } else if (averageVolume >= 30 && averageVolume < 40) {
+            // Medium volume, show medium flame video
+            initialFlameVideo.style.display = 'none';
+            mediumFlameVideo.style.display = 'block';
+            blownOutFlameVideo.style.display = 'none';
+          } else {
+            blownOutFlameVideo.currentTime = 0;
+            // High volume, show blown-out flame video
+            initialFlameVideo.style.display = 'none';
+            mediumFlameVideo.style.display = 'none';
+            blownOutFlameVideo.style.display = 'block';
+
+            // Set the flag to true, indicating the blown-out flame is shown
+            isBlownOutShown = true;
+
+            // Set up the timer to switch videos after 25 seconds
+            setTimeout(() => {
+              isOut = true;
               blownOutFlameVideo.style.display = 'none';
-            } else if (averageVolume >= 30 && averageVolume < 40) {
-              // Medium volume, show medium flame video
-              initialFlameVideo.style.display = 'none';
-              mediumFlameVideo.style.display = 'block';
+              nextFlameVideo.style.display = 'block';
+              nextFlameVideo.play(); // Start playing "3044.mp4"
               blownOutFlameVideo.style.display = 'none';
-            } else {
-              blownOutFlameVideo.currentTime = 0;
-              // High volume, show blown-out flame video
-              initialFlameVideo.style.display = 'none';
-              mediumFlameVideo.style.display = 'none';
-              blownOutFlameVideo.style.display = 'block';
-
-              // Set the flag to true, indicating the blown-out flame is shown
-              isBlownOutShown = true;
-
-              // Set up the timer to switch videos after 25 seconds
-              setTimeout(() => {
-                isOut = true;
-                blownOutFlameVideo.style.display = 'none';
-                nextFlameVideo.style.display = 'block';
-                nextFlameVideo.play(); // Start playing "3044.mp4"
-                blownOutFlameVideo.style.display = 'none';
-              }, 21000); // Delay for 25 seconds
-            }
-          } else if (isOut) {
-            // Handle logic for when '3044.mp4' is playing
+            }, 21000); // Delay for 25 seconds
           }
-
-          // Log averageVolume to console
-          console.log('Average Volume:', averageVolume);
+        } else if (isOut) {
+          // Handle logic for when '3044.mp4' is playing
         }
 
-        setInterval(analyzeVolume, 100); // Log every 0.1 seconds
+        // Log averageVolume to console
+        console.log('Average Volume:', averageVolume);
+      }
 
-        // Reset button click event
-        const resetButton = document.getElementById('reset-button');
-        resetButton.addEventListener('click', () => {
-          // Reset the state
-          isBlownOutShown = false;
+      setInterval(analyzeVolume, 100); // Log every 0.1 seconds
 
-          // Hide all videos
-          document.getElementById('initial-flame').style.display = 'none';
-          document.getElementById('medium-flame').style.display = 'none';
-          document.getElementById('blown-out-flame').style.display = 'none';
-          document.getElementById('next-flame').style.display = 'none';
-          isBlownOutShown = false;
-        });
-        
-      })
-      .catch((error) => {
-        console.error('Error accessing microphone:', error);
+      // Reset button click event
+      const resetButton = document.getElementById('reset-button');
+      resetButton.addEventListener('click', () => {
+        // Reset the state
+        isBlownOutShown = false;
+
+        // Hide all videos
+        document.getElementById('initial-flame').style.display = 'none';
+        document.getElementById('medium-flame').style.display = 'none';
+        document.getElementById('blown-out-flame').style.display = 'none';
+        document.getElementById('next-flame').style.display = 'none';
+        isBlownOutShown = false;
       });
-  </script>
+
+    })
+    .catch((error) => {
+      console.error('Error accessing microphone:', error);
+    });
+</script>
+
+
 </body>
 </html>
