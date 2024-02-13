@@ -193,7 +193,7 @@ chem3a nrml sinon la tawlet lmouda ytfa
       <img class="imgempty" src="./empty001.png"/>
       
         
-         
+          <button id="startButton">Start Microphone</button>
           <video id="initial-flame" class="flame-video" autoplay loop muted>
             <!-- <source src="initial_flame.mp4" type="video/mp4"> -->
             <source src="3011.mp4" type="video/mp4">
@@ -230,8 +230,14 @@ chem3a nrml sinon la tawlet lmouda ytfa
     let isBlownOutShown = false;
 
 
-    navigator.mediaDevices.getUserMedia({ audio: true })
-      .then((stream) => {
+     const startButton = document.getElementById('startButton');
+
+  if (startButton) {
+    startButton.addEventListener('click', () => {
+      // Trigger microphone access after button click
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then((stream) => {
+           console.log('Microphone access granted');
         mic = audioContext.createMediaStreamSource(stream);
         const analyser = audioContext.createAnalyser();
         mic.connect(analyser);
@@ -313,6 +319,10 @@ chem3a nrml sinon la tawlet lmouda ytfa
       .catch((error) => {
         console.error('Error accessing microphone:', error);
       });
+      });
+  } else {
+    console.error('Button element not found');
+  }
   </script>
 </body>
 </html>
